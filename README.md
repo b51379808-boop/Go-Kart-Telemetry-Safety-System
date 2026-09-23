@@ -1,14 +1,13 @@
 # Go-Kart Telemetry & Thermal Safety System
 
-An embedded, real-time telemetry and safety logging engine designed for motorsport environments. Built on the ATmega328P microcontroller, this system processes multi-sensor inputs, drives active thermal warning alerts, and logs high-frequency diagnostic data to an SD card under strict hardware constraints.
-
+An embedded, real-time telemetry and safety logging engine . Built on an Arduino microcontroller, this system processes multi-sensor inputs, drives active thermal warning alerts, and logs high-frequency data to an SD card.
 ---
 
-## What I Built
-A standalone, non-blocking telemetry engine for a high-performance go-kart that simultaneously calculates live ground speed and engine rotational velocity, executes a 3-tier active thermal safety state machine, and logs structured data to a micro-SD card. 
+## what is it?
+A device that simultaneously calculates live ground speed and engine rotational velocity, executes a 3-tier active thermal safety state machine, and logs data to a micro-SD card. 
 
-### Core Hardware & Firmware Architecture
-* **Microcontroller:** ATmega328P (5V, 16MHz)
+### Core Hardware & Firmware 
+* **Microcontroller:** ATmega328P Clone (5V, 16MHz)
 * **Sensor Array:** Dual Hall-Effect Sensors (Axle Speed & Engine RPM), MAX6675 Cold-Junction Thermocouple K-Type Converter
 * **User Interface:** Dual High-Output LED Warning Array (Yellow/Red state alerts)
 * **Storage & Telemetry:** MicroSD Card Module (SPI Interface), 115200 Baud Live Serial Stream
@@ -16,7 +15,7 @@ A standalone, non-blocking telemetry engine for a high-performance go-kart that 
 ---
 
 ## Why I Built It
-Karting engines operate under high heat and vibration with zero factory diagnostic infrastructure. Overheating can lead to total engine failure within seconds, while manual tuning without quantitative speed and RPM data relies purely on guesswork. I built this embedded system to provide real-time visual safety alerts on the track and high-resolution telemetry logging for post-run performance analysis.
+Overheating can prove dangerous to the driver, I wanted to ensure the safety of not only myself when driving, but anyone else riding the go-kart. Furthermore, I wanted to the ensure the optimization of the go kart through calculating slip 
 
 ---
 
@@ -28,9 +27,8 @@ Karting engines operate under high heat and vibration with zero factory diagnost
 ---
 
 ## Short Video
-> **[Watch Demonstration & Bench Test Video Here]** *(Link your YouTube / Loom video here)*
-> 
-> *Demonstrating dual-interrupt sensor logging, real-time Serial output, MAX6675 thermal state triggers, and SD card file writing.*
+> **[Watch Demonstration & Bench Test Video Here]**
+
 
 ---
 
