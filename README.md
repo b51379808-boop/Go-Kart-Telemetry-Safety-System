@@ -33,3 +33,19 @@ Overheating can prove dangerous to the driver, I wanted to ensure the safety of 
 ---
 
 ## System Diagram
++-----------------------------------------------------------------------+
+|                             ATmega328P                                |
+|                                                                       |
+|  [Digital Pin 2 - INT0] <--- Hall Sensor 1 (Wheel Speed / MPH)        |
+|  [Digital Pin 3 - INT1] <--- Hall Sensor 2 (Engine Speed / RPM)       |
+|                                                                       |
+|  [Digital Pin 4 - SO  ] <--- MAX6675 Thermocouple Module              |
+|  [Digital Pin 5 - CS  ] ---> (Engine Temp °F)                         |
+|  [Digital Pin 6 - SCK ] --->                                          |
+|                                                                       |
+|  [Digital Pin 7       ] ---> Yellow LED (Tier 1 Caution)              |
+|  [Digital Pin 8       ] ---> Red LED (Tier 2/3 Warning/Critical)      |
+|                                                                       |
+|  [SPI Hardware Pins   ] <---> MicroSD Card Module (LOG.CSV Logging)    |
+|  [Serial USB          ] ---> 115200 Baud Diagnostics Stream          |
++-----------------------------------------------------------------------+
