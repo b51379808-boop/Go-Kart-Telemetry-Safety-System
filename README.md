@@ -33,7 +33,61 @@ Overheating can prove dangerous to the driver, I wanted to ensure the safety of 
 ---
 
 ## System Diagram
+graph TD
+    %% Define System Node & Styles
+    subgraph KART [GO-KART TELEMETRY & SAFETY ENGINE]
+        style KART fill:#f0f7ff,stroke:#005cbf,stroke-width:2px,rx:10,ry:10
+        
+        %% Microcontroller Unit
+        subgraph MCU [ATmega328P Microcontroller]
+            style MCU fill:#d6eaff,stroke:#007bff,stroke-width:2px,rx:8,ry:8
+            CORE[8-bit RISC CPU<br/>16MHz]
+            INT_HNDLR[Deterministic Interrupt<br/>Handler (ISRs)]
+            TASK_SCHED[Non-Blocking Task<br/>Scheduler (100ms/200ms)]
+            BUFFER[16-Frame RAM<br/>Ring Buffer]
+        end
+        
+        %% Input Section (Sensors)
+        subgraph INPUT [SENSOR INPUT ARRAY]
+            style INPUT fill:#fff3cd,stroke:#e0a800,stroke-width:1.5px
+            HALL_SPEED(Hall Sensor 1<br/>Wheel Speed) -->|High-Freq pulses| INT_HNDLR
+            HALL_RPM(Hall Sensor 2<br/>Engine RPM)   -->|High-Freq pulses| INT_HNDLR
+            MAX_AMP(MAX6675 SPI<br/>Thermocouple Amp) -->|°F Data| TASK_SCHED
+        end
 
+        %% Process Flow (Core Logic)
+        CORE <-->|Context Switch| INT_HNDLR
+        INT_HNDLR -->|Atomic Pulse Counts| TASK_SCHED
+        TASK_SCHED -->|Live Data (MPH, RPM)| CORE
+        CORE -->|Structure Push| BUFFER
+
+        %% Output Section (Actuators & Data)
+        subgraph OUTPUT [OUTPUT & STORAGE INTERFACES]
+            style OUTPUT fill:#d4edda,stroke:#1e7e34,stroke-width:1.5px
+            LED_YEL[[Yellow LED<br/>Tier 1 Caution]]
+            LED_RED[[Red LED<br/>Tier 2/3 Warning]]
+            SD_MOD[[MicroSD Card<br/>SPI Module]]
+            SERIAL[[115200 Baud<br/>Serial Stream]]
+        end
+        
+        %% Actuator/Data Flows
+        TASK_SCHED -->|State Triage| LED_YEL
+        TASK_SCHED -->|State Triage| LED_RED
+        BUFFER -->|SD Block Flush<br/>LOG.CSV| SD_MOD
+        CORE -->|Live Update| SERIAL
+        
+        %% Connections to Outside Systems
+        subgraph EXTERNAL [PHYSICAL & ANALYTICAL EXTERNAL SYSTEMS]
+            style EXTERNAL fill:#e2e3e5,stroke:#6c757d,stroke-width:1px,stroke-dasharray: 5 5
+            DRVR(Driver<br/>Safety Awareness)
+            POST(Post-Run<br/>Data Analysis)
+        end
+        
+        LED_YEL -->|Visual Alert| DRVR
+        LED_RED -->|Visual Alert| DRVR
+        SD_MOD -->|Raw CSV Data| POST
+        SERIAL -->|Live Triage| POST
+    end
 
 ## Key Engineering Decisions
 
