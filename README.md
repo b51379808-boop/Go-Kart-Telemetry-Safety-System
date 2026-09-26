@@ -3,7 +3,7 @@
 An embedded, real-time telemetry and safety logging engine . Built on an Arduino microcontroller, this system processes multi-sensor inputs, drives active thermal warning alerts, and logs high-frequency data to an SD card.
 ---
 
-## what I built
+## What I Built
 A telemetry and thermal-safety system for a go-kart that measures engine/axle speed and temperature, calculates clutch slip, and records telemetry for later analysis through a microsd card.
 
 ### Core Hardware & Firmware 
