@@ -60,7 +60,7 @@ Direct SPI writes to an SD card suffer from unpredictable flash write latencies 
 With SD card SPI libraries reserving 512 bytes for sector buffering, global variables caused memory collisions on the ATmega328P. Dynamic memory was reclaimed by wrapping static string literals in `F()` macros (moving string memory into Flash memory) and shrinking ring buffer allocation, maintaining dynamic memory usage below 50%.
 
 ### 4. Hardware Safety Triage
-During bench testing, a short-circuit incident destroyed an I2C LCD display. Rather than delaying deployment, the display dependencies were removed. All visualization logic was shifted to a ultra-fast 3-tier LED warning state machine and live 115200-baud Serial output, stripping over 70 lines of library overhead and increasing code execution stability.
+During bench testing, a short-circuit incident destroyed an I2C LCD display. Rather than delaying, the display features were removed. Visualization was shifted to a 3-tier LED warning state machine , stripping over 70 lines of library overhead and increasing code execution stability.
 
 *For full schematics and visual flow diagrams, see [docs/architecture.png](docs/architecture.png).*
 ---
