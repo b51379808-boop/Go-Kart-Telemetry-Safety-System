@@ -3,8 +3,8 @@
 An embedded, real-time telemetry and safety logging engine . Built on an Arduino microcontroller, this system processes multi-sensor inputs, drives active thermal warning alerts, and logs high-frequency data to an SD card.
 ---
 
-## what is it?
-A device that simultaneously calculates live ground speed and engine rotational velocity, executes a 3-tier active thermal safety state machine, and logs data to a micro-SD card. 
+## what I built
+A telemetry and thermal-safety system for a go-kart that measures engine/axle speed and temperature, calculates clutch slip, and records telemetry for later analysis through a microsd card.
 
 ### Core Hardware & Firmware 
 * **Microcontroller:** ATmega328P Clone (5V, 16MHz)
@@ -15,8 +15,7 @@ A device that simultaneously calculates live ground speed and engine rotational 
 ---
 
 ## Why I Built It
-Overheating can prove dangerous to the driver, I wanted to ensure the safety of not only myself when driving, but anyone else riding the go-kart. Furthermore, I wanted to the ensure the optimization of the go kart through calculating slip 
-
+I wanted to understand how the machine behaved rather than relying only on intuition while driving it. I also wanted to ensure that while driving my go-kart I was safe.
 ---
 
 ## What Problem It Solves
@@ -31,9 +30,24 @@ Overheating can prove dangerous to the driver, I wanted to ensure the safety of 
 
 
 ---
+## System Architecture
 
-## System Diagram
+### 1. Real-Time Physical Inputs → Microcontroller Processing
+* **Wheel Speed Sensor** → Tracks wheel revolutions via magnetic pulses → Calculates real-time ground speed (MPH) based on 17" tire diameter.
+* **Engine Speed Sensor** → Tracks crankshaft revolutions via magnetic pulses → Calculates live engine RPM.
+* **Temperature Sensor** → Monitors engine head heat via digital probe → Prevents permanent thermal damage to the engine.
 
+### 2. Embedded Safety Engine → Driver Alert Hardware
+* **Drivetrain Analysis (RPM vs. MPH)** → Detects mechanical clutch slip (when the engine spins faster than the wheels can turn).
+* **Multi-Tier Safety Logic** → Evaluates live temperature and sustained clutch slip (>2 seconds) → Triggers visual alerts instantly:
+  * **Tier 1 Alert (Caution):** Engine hits 150°F OR clutch slips continuously → **Yellow LED turns ON**
+  * **Tier 2 Alert (Warning):** Engine hits 180°F → **Red LED turns ON**
+  * **Tier 3 Alert (Critical):** Engine hits 200°F → **Both LEDs turn ON** (Immediate driver shutdown signal)
+
+### 3. Memory Optimization → High-Reliability Data Storage
+* **Live Telemetry Data** → Queued in an optimized RAM Ring Buffer → Prevents system lag while saving to storage.
+* **Buffered Data Queue** → Asynchronous SPI Flush → Saved to MicroSD Card (`LOG.CSV`) for post-run performance analysis.
+* **Live Diagnostics** → High-Speed Serial Output → Transmitted to a laptop for real-time trackside tuning.
 ## Key Engineering Decisions
 
 ### 1. Multi-Rate Non-Blocking Task Scheduling
@@ -47,7 +61,8 @@ With SD card SPI libraries reserving 512 bytes for sector buffering, global vari
 
 ### 4. Hardware Safety Triage
 During bench testing, a short-circuit incident destroyed an I2C LCD display. Rather than delaying deployment, the display dependencies were removed. All visualization logic was shifted to a ultra-fast 3-tier LED warning state machine and live 115200-baud Serial output, stripping over 70 lines of library overhead and increasing code execution stability.
-
+---
+*For full schematics and visual flow diagrams, see [docs/architecture.md](docs/architecture.md).*
 ---
 
 ## Bench Mark Validation
