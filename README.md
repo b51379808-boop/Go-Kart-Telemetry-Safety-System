@@ -15,8 +15,8 @@ A telemetry and thermal-safety system for a go-kart that measures engine/axle sp
 ---
 
 ## Why I Built It
-I wanted to understand how the machine behaved rather than relying only on intuition while driving it. I also wanted to ensure that while driving my go-kart I was safe.
----
+I wanted to understand how the machine numbers rather than relying only on guesswork while driving it. I also wanted to ensure that, while driving my go-kart, I was safe.
+
 
 ## What Problem It Solves
 1. **Engine Protection:** Prevents catastrophic engine failure by monitoring head/exhaust temperatures and alerting the driver instantly via a tiered visual LED state machine before critical thresholds are reached.
