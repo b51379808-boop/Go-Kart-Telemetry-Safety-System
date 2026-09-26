@@ -33,19 +33,25 @@ Overheating can prove dangerous to the driver, I wanted to ensure the safety of 
 ---
 
 ## System Diagram
-+-----------------------------------------------------------------------+
-|                             ATmega328P                                |
-|                                                                       |
-|  [Digital Pin 2 - INT0] <--- Hall Sensor 1 (Wheel Speed / MPH)        |
-|  [Digital Pin 3 - INT1] <--- Hall Sensor 2 (Engine Speed / RPM)       |
-|                                                                       |
-|  [Digital Pin 4 - SO  ] <--- MAX6675 Thermocouple Module              |
-|  [Digital Pin 5 - CS  ] ---> (Engine Temp °F)                         |
-|  [Digital Pin 6 - SCK ] --->                                          |
-|                                                                       |
-|  [Digital Pin 7       ] ---> Yellow LED (Tier 1 Caution)              |
-|  [Digital Pin 8       ] ---> Red LED (Tier 2/3 Warning/Critical)      |
-|                                                                       |
-|  [SPI Hardware Pins   ] <---> MicroSD Card Module (LOG.CSV Logging)    |
-|  [Serial USB          ] ---> 115200 Baud Diagnostics Stream          |
-+-----------------------------------------------------------------------+
+
+
+## Key Engineering Decisions
+
+### 1. Multi-Rate Non-Blocking Task Scheduling
+To accommodate the hardware constraints of the MAX6675 thermocouple converter—which requires a minimum $220\text{ ms}$ internal A/D conversion cycle—thermal reads were decoupled from the main telemetry loop. Telemetry calculations (MPH/RPM) and SD ring-buffer pushes execute strictly every $100\text{ ms}$, while thermal sampling is throttled to $200\text{ ms}$ using state counters. This eliminated sensor stalls while keeping high-frequency telemetry intact.
+
+### 2. RAM Ring Buffer & Asynchronous SD Writing
+Direct SPI writes to an SD card suffer from unpredictable flash write latencies (up to $100\text{ ms}$ per block flush). To prevent blocking the main loop, a 16-frame circular RAM buffer (ring buffer) was implemented. Telemetry frames are enqueued synchronously every $100\text{ ms}$, while background task loops drain the buffer to `LOG.CSV` and flush every 10 frames to protect flash endurance and ensure deterministic loop execution.
+
+### 3. Memory Optimization under 2KB SRAM Limit
+With SD card SPI libraries reserving 512 bytes for sector buffering, global variables caused memory collisions on the ATmega328P. Dynamic memory was reclaimed by wrapping static string literals in `F()` macros (moving string memory into Flash memory) and shrinking ring buffer allocation, maintaining dynamic memory usage below 50%.
+
+### 4. Hardware Safety Triage
+During bench testing, a short-circuit incident destroyed an I2C LCD display. Rather than delaying deployment, the display dependencies were removed. All visualization logic was shifted to a ultra-fast 3-tier LED warning state machine and live 115200-baud Serial output, stripping over 70 lines of library overhead and increasing code execution stability.
+
+---
+
+## Results
+* **Deterministic Execution:** Stable $100\text{ ms}$ main execution loop with zero dropped Hall-effect interrupt counts.
+* **Thermal Safety Response:** Demonstrated reliable state transitions across 3 temperature tiers (Tier 1: $150^\circ\text{F}$, Tier 2: $180^\circ\text{F}$, Tier 3: $200^\circ\text{F}+$).
+* **Reliable Black-Box Logging:** Verified multi-hour continuous logging to `LOG.CSV` on MicroSD card powered by 6V battery source.
