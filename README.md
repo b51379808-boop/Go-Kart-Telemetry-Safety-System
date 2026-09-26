@@ -51,9 +51,9 @@ During bench testing, a short-circuit incident destroyed an I2C LCD display. Rat
 ---
 
 ## Bench Mark Validation
-RPM sensing: Engine and axle Hall sensors successfully detected rotational speed.
-Clutch-slip calculation: The system successfully calculated slip from the measured speeds.
-Thermal monitoring: The MAX6675 successfully measured temperature and calculated temperature-rise rate.
-Warning system: The four-state LED logic responded to the programmed thermal thresholds.
-Data logging: Telemetry was successfully written to the MicroSD card through the buffering/logging system.
-Filtering: EMA filtering reduced the effect of observed thermal measurement noise.
+**RPM sensing** Engine and axle Hall sensors successfully detected rotational speed.
+**Clutch-slip calculation** The system successfully calculated slip from the measured speeds.
+**Thermal monitoring** The MAX6675 successfully measured temperature and calculated temperature-rise rate.
+**Warning system** The four-state LED logic responded to the programmed thermal thresholds.
+**Data logging** Telemetry was successfully written to the MicroSD card through the buffering/logging system.
+**Filtering** EMA filtering reduced the effect of observed thermal measurement noise.
