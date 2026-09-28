@@ -19,7 +19,7 @@ I wanted to understand how the machine numbers rather than relying only on guess
 
 
 ## What Problem It Solves
-1. **Engine Protection:** Prevents catastrophic engine failure by monitoring head/exhaust temperatures and alerting the driver instantly via a tiered visual LED state machine before critical thresholds are reached.
+1. **Engine Protection:** Prevents engine damage by monitoring temperatures and alerting the driver through a tiered visual LED state machine before critical thresholds are reached.
 2. **Deterministic Data Acquisition:** Captures synchronized pulse timing and thermal data without missing interrupt events or delaying execution.
 3. **Hardware & Memory Efficiency:** Runs a fully integrated telemetry stack within 2KB of dynamic RAM (SRAM) without crashing or encountering memory heap collisions.
 
@@ -39,8 +39,8 @@ I wanted to understand how the machine numbers rather than relying only on guess
 
 ### 2. Embedded Safety Engine → Driver Alert Hardware
 * **Drivetrain Analysis (RPM vs. MPH)** → Detects mechanical clutch slip (when the engine spins faster than the wheels can turn).
-* **Multi-Tier Safety Logic** → Evaluates live temperature and sustained clutch slip (>2 seconds) → Triggers visual alerts instantly:
-  * **Tier 1 Alert (Caution):** Engine hits 150°F OR clutch slips continuously → **Yellow LED turns ON**
+* **Multi-Tier Safety Logic** → Evaluates live temperature and sustained clutch slip (>2 seconds) → Triggers visual alerts:
+  * **Tier 1 Alert (Caution):** Engine hits 150°F OR clutch slips continuously (>2s) → **Yellow LED turns ON**
   * **Tier 2 Alert (Warning):** Engine hits 180°F → **Red LED turns ON**
   * **Tier 3 Alert (Critical):** Engine hits 200°F → **Both LEDs turn ON** (Immediate driver shutdown signal)
 
@@ -51,10 +51,10 @@ I wanted to understand how the machine numbers rather than relying only on guess
 ## Key Engineering Decisions
 
 ### 1. Multi-Rate Non-Blocking Task Scheduling
-To accommodate the hardware constraints of the MAX6675 thermocouple converter—which requires a minimum $220\text{ ms}$ internal A/D conversion cycle—thermal reads were decoupled from the main telemetry loop. Telemetry calculations (MPH/RPM) and SD ring-buffer pushes execute strictly every $100\text{ ms}$, while thermal sampling is throttled to $200\text{ ms}$ using state counters. This eliminated sensor stalls while keeping high-frequency telemetry intact.
+To accommodate the hardware constraints of the MAX6675 thermocouple converter—which requires a minimum 220 ms internal A/D conversion cycle—thermal reads were decoupled from the main telemetry loop. Telemetry calculations (MPH/RPM) and SD ring-buffer pushes execute strictly every 100 ms, while thermal sampling is throttled to 200 ms using state counters. This eliminated sensor stalls while keeping high-frequency telemetry intact.
 
 ### 2. RAM Ring Buffer & Asynchronous SD Writing
-Direct SPI writes to an SD card suffer from unpredictable flash write latencies (up to $100\text{ ms}$ per block flush). To prevent blocking the main loop, a 16-frame circular RAM buffer (ring buffer) was implemented. Telemetry frames are enqueued synchronously every $100\text{ ms}$, while background task loops drain the buffer to `LOG.CSV` and flush every 10 frames to protect flash endurance and ensure deterministic loop execution.
+Direct SPI writes to an SD card suffer from unpredictable flash write latencies (up to 100 ms per block flush). To prevent blocking the main loop, a 16-frame circular RAM buffer (ring buffer) was implemented. Telemetry frames are enqueued synchronously every 100 ms, while background task loops drain the buffer to `LOG.CSV` and flush every 10 frames to protect flash endurance and ensure deterministic loop execution.
 
 ### 3. Memory Optimization under 2KB SRAM Limit
 With SD card SPI libraries reserving 512 bytes for sector buffering, global variables caused memory collisions on the ATmega328P. Dynamic memory was reclaimed by wrapping static string literals in `F()` macros (moving string memory into Flash memory) and shrinking ring buffer allocation, maintaining dynamic memory usage below 50%.
@@ -73,8 +73,6 @@ During bench testing, a short-circuit incident destroyed an I2C LCD display. Rat
 
 **Thermal monitoring** The MAX6675 successfully measured temperature and calculated temperature-rise rate.
 
-**Warning system** The four-state LED logic responded to the programmed thermal thresholds.
+**Warning system** The three tier LED system responded to the programmed thermal thresholds.
 
 **Data logging** Telemetry was successfully written to the MicroSD card through the buffering/logging system.
-
-**Filtering** EMA filtering reduced the effect of observed thermal measurement noise.
