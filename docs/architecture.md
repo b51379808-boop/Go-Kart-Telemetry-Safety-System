@@ -1,4 +1,4 @@
-# System Architecture & Engineering Specifications
+ #System Architecture & Engineering Specifications
 
 This document details the software architecture, task scheduling, memory management, and hardware interfaces for the Go-Kart Telemetry and Safety System.
 
