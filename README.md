@@ -1,6 +1,6 @@
 # Go-Kart Telemetry & Thermal Safety System
 
-An embedded, real-time telemetry and safety logging engine . Built on an Arduino microcontroller, this system processes multi-sensor inputs, drives active thermal warning alerts, and logs high-frequency data to an SD card.
+An embedded, real-time telemetry and safety logging engine. Built on an Arduino microcontroller, this system processes multi-sensor inputs, drives active thermal warning alerts, and logs high-frequency data to an SD card.
 ---
 
 ## What I Built
