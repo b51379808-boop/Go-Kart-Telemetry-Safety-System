@@ -27,8 +27,14 @@ I wanted to understand how the machine numbers rather than relying only on guess
 
 ---
 
-## Short Video
- ![Go-Kart Bench Test Demo](images/BenchTest.gif)
+## Hardware Demonstration & Assembly
+   <p align="center">
+  <img src="images/BenchTest.gif" alt="Go-Kart Bench Test Demo" width="48%" />
+  <img src="images/Arduino.jpg" alt="Go-Kart Enclosure & Sensor Rig" width="48%" />
+</p>
+<p align="center">
+  <em>Figure 1: Go-Kart Telemetry Assembly. Side-by-side comparison. Left: Active bench test (note: LED activity). Right: Top-down assembly detail, highlighting centralized ATmega328P wiring and organized SPI MicroSD logging bus</em>
+</p>
 
 
 ---
