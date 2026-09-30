@@ -28,7 +28,7 @@ I wanted to understand how the machine numbers rather than relying only on guess
 ---
 
 ## Short Video
-> **[Watch Demonstration & Bench Test Video Here]**
+> **[images/benchtest.gif]**
 
 
 ---
