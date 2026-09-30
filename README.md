@@ -65,7 +65,7 @@ With SD card SPI libraries reserving 512 bytes for sector buffering, global vari
 ### 4. Hardware Safety Triage
 During bench testing, a short-circuit incident destroyed an I2C LCD display. Rather than delaying, the display features were removed. Visualization was shifted to a 3-tier LED warning state machine , stripping over 70 lines of library overhead and increasing code execution stability.
 
-*For full schematics and visual flow diagrams, see [docs/architecture.png](docs/architecture.png).*
+*For full schematics and visual flow diagrams, see [docs/architecture.md](docs/architecture.md).*
 ---
 
 ## Bench Mark Validation
